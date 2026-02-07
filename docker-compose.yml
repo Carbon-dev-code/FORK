@@ -2,7 +2,6 @@ version: '3.8'
 services:
   project:
     build: .
-    container_name: project
     ports:
       - "8080:80"
     volumes:
