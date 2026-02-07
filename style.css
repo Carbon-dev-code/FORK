@@ -1,0 +1,51 @@
+.chat-container {
+     max-width: 600px;
+     margin: auto;
+     font-family: Arial;
+}
+
+.chat {
+     display: flex;
+     flex-direction: column;
+}
+
+.user {
+     background: #e5e7eb;
+     padding: 10px;
+     border-radius: 12px;
+     margin: 5px 0;
+     align-self: flex-end;
+}
+
+.bot {
+     background: #2563eb;
+     color: white;
+     padding: 10px;
+     border-radius: 12px;
+     margin: 5px 0;
+     align-self: flex-start;
+}
+
+.meta {
+     font-size: 10px;
+     color: #666;
+     margin-bottom: 2px;
+     text-align: right;
+}
+
+.switch {
+     font-size: 13px;
+     text-align: end;
+     margin: 4px 0;
+     color: #444;
+}
+
+.switch span {
+     cursor: pointer;
+     margin: 0 4px;
+}
+
+.switch span.active {
+     color: #2563eb;
+     font-weight: bold;
+}
