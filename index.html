@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Chat MongoDB Branch Latest</title>
+     <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+     <div class="chat-container">
+          <div id="chat" class="chat"></div>
+     </div>
+
+     <script>
+          const data = [
+               {
+                    _id: "696b98357e1250ca17bdfa23",
+                    parent_id: null,
+                    question: "Que signifie DST ?",
+                    reponse: "DST signifie Direction des Services Topographiques. Cependant, il est …",
+                    date_conversation: "2026-01-17T14:09:57.754+00:00"
+               },
+               {
+                    _id: "696b98be7e1250ca17bdfa27",
+                    parent_id: "696b98357e1250ca17bdfa23",
+                    question: "qu'elle est son role ?",
+                    reponse: "Selon le document.pdf, la Direction des Services Topographiques (DST) …",
+                    date_conversation: "2026-01-17T14:12:14.251+00:00"
+               },
+               {
+                    _id: "696cb87c53e4c602e390e8be",
+                    parent_id: "696b98be7e1250ca17bdfa27",
+                    question: "Qu'elle sont les pieces a fournir pour une etablissement de plan regul…",
+                    reponse: "Pour l'établissement des plans réguliers ou plans de localisation, sel…",
+                    date_conversation: "2026-01-18T10:39:56.495+00:00"
+               },
+               {
+                    _id: "696e1525d0de711515727cb9",
+                    parent_id: "696b98be7e1250ca17bdfa27",
+                    question: "Qu'elle sont les pieces a fournir pour une projet de morcellement",
+                    reponse: "Pour un projet de morcellement, selon le document service.pdf, les piè…",
+                    date_conversation: "2026-01-19T11:27:33.990+00:00"
+               },
+               {
+                    _id: "696e1a783f8865c5e8169035",
+                    parent_id: "696b98be7e1250ca17bdfa27",
+                    question: "C'est quoi Bootstrap ?",
+                    reponse: "Bootstrap est un ensemble d'outils pratiques pour créer les designs de…",
+                    date_conversation: "2026-01-19T11:50:16.449+00:00"
+               },
+               {
+                    _id: "696e1ad23f8865c5e8169039",
+                    parent_id: "696e1a783f8865c5e8169035",
+                    question: "c'est quoi HTML ?",
+                    reponse: "HTML est l'abréviation de « HyperText Markup Language » et c'est un la…",
+                    date_conversation: "2026-01-19T11:51:46.760+00:00"
+               }
+          ];
+
+          const chat = document.getElementById("chat");
+
+          // récupère l'élément avec date max
+          function getLatestNode() {
+               return data.reduce((max, item) => {
+                    return new Date(item.date_conversation) > new Date(max.date_conversation) ? item : max;
+               }, data[0]);
+          }
+
+          // construit la branche complète jusqu'au root
+          function buildBranchFromNode(node) {
+               const branch = [];
+               let cur = node;
+               while (cur) {
+                    branch.unshift(cur); // on met au début pour root -> leaf
+                    cur = data.find(d => d._id === cur.parent_id);
+               }
+               return branch;
+          }
+
+          let path = buildBranchFromNode(getLatestNode());
+
+          function getChildren(id) {
+               return data.filter(i => i.parent_id === id);
+          }
+
+          function buildBranch(start) {
+               const branch = [start];
+               let cur = start;
+               while (getChildren(cur._id).length) {
+                    cur = getChildren(cur._id)[0];
+                    branch.push(cur);
+               }
+               return branch;
+          }
+
+          function render() {
+               chat.innerHTML = "";
+               path.forEach((p, idx) => {
+                    chat.innerHTML += `
+      <div class="meta">${new Date(p.date_conversation).toLocaleString()}</div>
+      <div class="user">${p.question}</div>
+    `;
+
+                    const siblings = data.filter(i => i.parent_id === p.parent_id);
+                    if (siblings.length > 1) {
+                         chat.innerHTML += `
+        <div class="switch">
+          ${siblings.map((s, i) =>
+                              `<span class="${s._id === p._id ? 'active' : ''}" onclick="switchNode(${idx},'${s._id}')">${i + 1}</span>`
+                         ).join(" | ")}
+        </div>
+      `;
+                    }
+
+                    chat.innerHTML += `<div class="bot">${p.reponse}</div>`;
+               });
+          }
+
+          function switchNode(index, newId) {
+               const item = data.find(i => i._id === newId);
+               const branch = buildBranch(item);
+               path = path.slice(0, index).concat(branch);
+               render();
+          }
+
+          // init
+          render();
+     </script>
+</body>
+
+</html>
