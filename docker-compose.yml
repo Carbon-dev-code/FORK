@@ -1,7 +1,9 @@
-version: '3.8'
+version: "3.9"
 services:
-  project:
+  web:
+    image: d-project
     build: .
+    container_name: project
     ports:
       - "8080:80"
     volumes:
